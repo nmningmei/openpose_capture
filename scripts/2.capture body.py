@@ -27,6 +27,7 @@ idx = 0 # batch change
 imagePath = allImagePaths[idx]
 imagePath = imagePath.replace('\\','/')
 frame_folder = imagePath.split('/')[-2]
+frame_index = re.findall("\d+",imagePath)[-1]
 
 # Starting OpenPose
 opWrapper = op.WrapperPython()
@@ -43,7 +44,7 @@ array_dir = os.path.join("../results/body",frame_folder)
 if not os.path.exists(array_dir):
     os.makedirs(array_dir)
 data = datum.poseKeypoints
-frame_index = re.findall("\d+",imagePath)[-1]
+
 saving_name = f'frame_{frame_index}'
 np.save(os.path.join(array_dir,
                      f"{saving_name}.npy"),

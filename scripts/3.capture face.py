@@ -34,3 +34,43 @@ idx = 0 # batch change
 imagePath = allImagePaths[idx]
 imagePath = imagePath.replace('\\','/')
 frame_folder = imagePath.split('/')[-2]
+frame_index = re.findall("\d+",imagePath)[-1]
+
+
+face_rects = np.load(os.path.join("../results/face_rectangles",frame_folder,f"frame_{frame_index}.npy"))
+# Starting OpenPose
+opWrapper = op.WrapperPython()
+opWrapper.configure(params)
+opWrapper.start()
+datum = op.Datum()
+imageToProcess = cv2.imread(imagePath)
+faceRectangles = []
+for a in face_rects:
+    faceRectangles.append(op.Rectangle(*list(a)))
+
+datum.cvInputData = imageToProcess
+datum.faceRectangles = faceRectangles
+opWrapper.emplaceAndPop([datum])
+print("Face keypoints: \n" + str(datum.faceKeypoints))
+
+array_dir = os.path.join("../results/face",frame_folder)
+if not os.path.exists(array_dir):
+    os.makedirs(array_dir)
+data = datum.faceKeypoints
+saving_name = f'frame_{frame_index}'
+np.save(os.path.join(array_dir,
+                     f"{saving_name}.npy"),
+        data)
+
+
+
+
+
+
+
+
+
+
+
+
+
