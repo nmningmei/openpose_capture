@@ -14,7 +14,7 @@ allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
 templates = ['2.capture body.py','3.capture face.py','4.capture hand.py']
 
-bash_folder = 'body_face_bash'
+bash_folder = 'body_face_hand_bash'
 if not os.path.exists(bash_folder):
     os.mkdir(bash_folder)
 
