@@ -16,6 +16,9 @@ from glob import glob
 
 hand_array_dir = "../results/hand_rectangles"
 boday_array_dir = "../results/body"
+hand_array_saving_dir = '../results/hand'
+if not os.path.exists(hand_array_saving_dir):
+    os.mkdir(hand_array_saving_dir)
 frames_dir = "../results/frames"
 
 params = dict()
@@ -52,7 +55,7 @@ for hand_corr in hand_rects:
     data.append(datum.handKeypoints[0])
 data = np.array(data)
 
-array_dir = os.path.join("../results/hand",frame_folder)
+array_dir = os.path.join(hand_array_saving_dir,frame_folder)
 if not os.path.exists(array_dir):
     os.makedirs(array_dir)
 data = datum.faceKeypoints

@@ -15,6 +15,9 @@ from glob import glob
 
 face_array_dir = "../results/face_rectangles"
 boday_array_dir = "../results/body"
+face_array_saving_dir = '../results/face/'
+if not os.path.exists(face_array_saving_dir):
+    os.mkdir(face_array_saving_dir)
 frames_dir = "../results/frames"
 
 params = dict()
@@ -50,14 +53,14 @@ datum.faceRectangles = faceRectangles
 opWrapper.emplaceAndPop([datum])
 print("Face keypoints: \n" + str(datum.faceKeypoints))
 
-array_dir = os.path.join("../results/face",frame_folder)
+array_dir = os.path.join(face_array_saving_dir,frame_folder)
 if not os.path.exists(array_dir):
     os.makedirs(array_dir)
 data = datum.faceKeypoints
 saving_name = f'frame_{frame_index}'
 np.save(os.path.join(array_dir,
                      f"{saving_name}.npy"),
-        data)
+        datum.faceKeypoints)
 
 
 
