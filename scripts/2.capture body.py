@@ -20,7 +20,6 @@ frames_dir = "../results/frames"
 
 frame_folders = os.listdir(frames_dir)
 
-
 allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
 idx = 0 # batch change
