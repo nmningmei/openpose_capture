@@ -12,7 +12,7 @@ from glob import glob
 frames_dir = "../results/frames"
 allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
-templates = ['2.capture body.py','3.capture face.py']
+templates = ['2.capture body.py','3.capture face.py','4.capture hand.py']
 
 bash_folder = 'body_face_bash'
 if not os.path.exists(bash_folder):
@@ -38,7 +38,7 @@ for template in templates:
                 old_file.close()
             new_file.close()
         collection.append(new_script_name)
-collection = np.array(collection).reshape(2,-1).T
+collection = np.array(collection).reshape(len(templates),-1).T
 
 with open(f'{bash_folder}/run_all.py','w') as f:
     f.write("""
@@ -48,7 +48,7 @@ import time""")
 with open(f'{bash_folder}/run_all.py','a') as f:
     for line in collection:
         print()
-        for component in ['capture body','capture face']:
+        for component in ['capture body','capture face','capture hand']:
             script_picked = [item for item in line if (component in item)][0]
             print(script_picked)
             python_command = f"python '{script_picked.split('/')[-1]}'"

@@ -34,7 +34,7 @@ imagePath = imagePath.replace('\\','/')
 frame_folder = imagePath.split('/')[-2]
 frame_index = re.findall("\d+",imagePath)[-1]
 
-face_rects = np.load(os.path.join("../../results/face_rectangles",frame_folder,f"frame_{frame_index}.npy"))
+face_rects = np.load(os.path.join(face_array_dir,frame_folder,f"frame_{frame_index}.npy"))
 # Starting OpenPose
 opWrapper = op.WrapperPython()
 opWrapper.configure(params)

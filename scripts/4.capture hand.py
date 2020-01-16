@@ -52,6 +52,15 @@ for hand_corr in hand_rects:
     data.append(datum.handKeypoints[0])
 data = np.array(data)
 
+array_dir = os.path.join("../results/hand",frame_folder)
+if not os.path.exists(array_dir):
+    os.makedirs(array_dir)
+data = datum.faceKeypoints
+saving_name = f'frame_{frame_index}'
+np.save(os.path.join(array_dir,
+                     f"{saving_name}.npy"),
+        data)
+
 #from matplotlib import pyplot as plt
 #from matplotlib.patches import Rectangle
 #import PIL
