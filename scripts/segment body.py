@@ -13,9 +13,9 @@ import pyopenpose as op
 import numpy as np
 
 params = dict()
-params["model_folder"] = "../../openpose/models/"
+params["model_folder"] = "/home/mikel/Downloads/openpose/models"
 
-imagePath = "../data/frame2137.jpg"
+imagePath = "../results/frames/00018_short/116.jpeg"
 
 # Starting OpenPose
 opWrapper = op.WrapperPython()
@@ -32,7 +32,7 @@ array_dir = "../results/body"
 if not os.path.exists(array_dir):
     os.mkdir(array_dir)
 data = datum.poseKeypoints
-saving_name = re.findall("frame\d+",imagePath)[0]
+saving_name = "temp"#re.findall("frame\d+",imagePath)[0]
 np.save(os.path.join(array_dir,
                      f"{saving_name}.npy"),
         data)
