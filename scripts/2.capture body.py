@@ -18,8 +18,6 @@ params = dict()
 params["model_folder"] = "/home/mikel/Downloads/openpose/models/"
 frames_dir = "../results/frames"
 
-frame_folders = os.listdir(frames_dir)
-
 allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
 idx = 0 # batch change
@@ -103,32 +101,32 @@ np.save(os.path.join(array_dir,
                 f"{saving_name}.npy"),
                 hands)
 
-from matplotlib import pyplot as plt
-from matplotlib.patches import Rectangle
-import PIL
-
-cc = np.array(PIL.Image.open(imagePath))
-fig,ax = plt.subplots(figsize = (10,10))
-ax.imshow(cc)
-for people in data:
-    people = people[people[:,-1] > 0]
-    ax.scatter(people[:,0],people[:,1],10,)
-for a in face_rectangles:
-    x,y,w,h = a
-    rect_ = Rectangle((x,y), w, h,
-              linewidth = 1,
-              edgecolor = "red",
-              facecolor = None,
-              fill = False,)
-    ax.add_patch(rect_)
-for a in hands:
-    x,y,w,h = a
-    rect_ = Rectangle((x,y), w, h,
-              linewidth = 1,
-              edgecolor = "red",
-              facecolor = None,
-              fill = False,)
-    ax.add_patch(rect_)
+#from matplotlib import pyplot as plt
+#from matplotlib.patches import Rectangle
+#import PIL
+#
+#cc = np.array(PIL.Image.open(imagePath))
+#fig,ax = plt.subplots(figsize = (10,10))
+#ax.imshow(cc)
+#for people in data:
+#    people = people[people[:,-1] > 0]
+#    ax.scatter(people[:,0],people[:,1],10,)
+#for a in face_rectangles:
+#    x,y,w,h = a
+#    rect_ = Rectangle((x,y), w, h,
+#              linewidth = 1,
+#              edgecolor = "red",
+#              facecolor = None,
+#              fill = False,)
+#    ax.add_patch(rect_)
+#for a in hands:
+#    x,y,w,h = a
+#    rect_ = Rectangle((x,y), w, h,
+#              linewidth = 1,
+#              edgecolor = "red",
+#              facecolor = None,
+#              fill = False,)
+#    ax.add_patch(rect_)
 
 
 

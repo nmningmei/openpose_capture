@@ -25,8 +25,6 @@ params["body"] = 0
 # params["hand"] = True
 # params["hand_detector"] = 2
 
-frame_folders = os.listdir(frames_dir)
-
 allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
 idx = 0 # batch change
@@ -35,7 +33,6 @@ imagePath = allImagePaths[idx]
 imagePath = imagePath.replace('\\','/')
 frame_folder = imagePath.split('/')[-2]
 frame_index = re.findall("\d+",imagePath)[-1]
-
 
 face_rects = np.load(os.path.join("../results/face_rectangles",frame_folder,f"frame_{frame_index}.npy"))
 # Starting OpenPose
