@@ -14,6 +14,9 @@ import PIL
 
 
 output_dir = '../results'
+figure_dir = '../figures'
+if not os.path.exists(figure_dir):
+    os.mkdir(figure_dir)
 directories = {}
 for name in ['body','face','hand']:
     temp = os.path.join(output_dir,name)
@@ -35,6 +38,9 @@ for (body_array,face_array,hand_array) in collections.T:
     image_name = body_array.split('/')[-1].replace('.npy','.jpeg').replace('frame_','')
     imagePath = os.path.join(output_dir,'frames',video_name,image_name)
     cc = np.array(PIL.Image.open(imagePath))
+    figure_saving_dir = os.path.join(figure_dir,video_name)
+    if not os.path.exists(figure_saving_dir):
+        os.mkdir(figure_saving_dir)
     fig,ax = plt.subplots(figsize = (10,10))
     ax.imshow(cc)
     for ii,person in enumerate(body):
@@ -46,3 +52,5 @@ for (body_array,face_array,hand_array) in collections.T:
         right_hand = hand[1,ii,:,:]
         ax.scatter(left_hand[:,0],left_hand[:,1],10,color='yellow')
         ax.scatter(right_hand[:,0],right_hand[:,1],10,color='green')
+    fig.savefig(os.path.join(figure_saving_dir,image_name))
+    
