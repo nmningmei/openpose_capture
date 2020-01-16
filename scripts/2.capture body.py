@@ -20,13 +20,14 @@ frames_dir = "../results/frames"
 
 frame_folders = os.listdir(frames_dir)
 
-for frame_folder in frame_folders:
-    allImagePaths = glob(os.path.join(frames_dir,frame_folder,'*.jpeg'))
+
+allImagePaths = glob(os.path.join(frames_dir,'*','*.jpeg'))
 
 idx = 0 # batch change
 
 imagePath = allImagePaths[idx]
 imagePath = imagePath.replace('\\','/')
+frame_folder = imagePath.split('/')[-2]
 
 # Starting OpenPose
 opWrapper = op.WrapperPython()
@@ -74,7 +75,7 @@ np.save(os.path.join(array_dir,
 
 array_dir = os.path.join("../results/hand_rectangles",frame_folder)
 if not os.path.exists(array_dir):
-    os.mkdir(array_dir)
+    os.makedirs(array_dir)
 hands = []
 for person in data:
     lefthand = person[7]
