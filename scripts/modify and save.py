@@ -40,12 +40,12 @@ for template in templates:
         collection.append(new_script_name)
 collection = np.array(collection).reshape(2,-1).T
 
-with open('4.run_all.py','w') as f:
+with open(f'{bash_folder}/run_all.py','w') as f:
     f.write("""
 import os
 import time""")
     f.close()
-with open('4.run_all.py','a') as f:
+with open(f'{bash_folder}/run_all.py','a') as f:
     for line in collection:
         print()
         for component in ['capture body','capture face']:
