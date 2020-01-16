@@ -7,6 +7,12 @@ Created on Thu Jan 16 16:00:40 2020
 import os
 from glob import glob
 import numpy as np
+
+from matplotlib import pyplot as plt
+from matplotlib.patches import Rectangle
+import PIL
+
+
 output_dir = '../results'
 directories = {}
 for name in ['body','face','hand']:
@@ -22,5 +28,21 @@ collections = np.array(list(array_files.values()))
 
 for (body_array,face_array,hand_array) in collections.T:
     body = np.load(body_array)
-    face = np.load(hand_array)
+    face = np.load(face_array)
     hand = np.load(hand_array)
+    body_array = body_array.replace('\\','/')
+    video_name = body_array.split('/')[-2]
+    image_name = body_array.split('/')[-1].replace('.npy','.jpeg').replace('frame_','')
+    imagePath = os.path.join(output_dir,'frames',video_name,image_name)
+    cc = np.array(PIL.Image.open(imagePath))
+    fig,ax = plt.subplots(figsize = (10,10))
+    ax.imshow(cc)
+    for ii,person in enumerate(body):
+        person = person[person[:,-1] > 0]
+        ax.scatter(person[:,0],person[:,1],10,color = 'blue')
+        person_face = face[ii,:,:]
+        ax.scatter(person_face[:,0],person_face[:,1],10,color='red')
+        left_hand = hand[0,ii,:,:]
+        right_hand = hand[1,ii,:,:]
+        ax.scatter(left_hand[:,0],left_hand[:,1],10,color='yellow')
+        ax.scatter(right_hand[:,0],right_hand[:,1],10,color='green')
