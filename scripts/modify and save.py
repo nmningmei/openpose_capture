@@ -3,30 +3,37 @@
 Created on Thu Jan 16 14:56:23 2020
 
 @author: ning
+
+This script will make the script to get the info of 
+body, face, and hand patterns of each individual 
+frame
+
+please run '1.*.py' script first
+
 """
 
 import os
 import re
 import numpy as np
 from glob import glob
-frames_dir = "../results/frames"
-allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
+frames_dir      = "../results/frames"
+allImagePaths   = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
-templates = ['2.capture body.py','3.capture face.py','4.capture hand.py']
+templates       = ['2.capture body.py','3.capture face.py','4.capture hand.py']
 
-bash_folder = 'body_face_hand_bash'
+bash_folder     = 'body_face_hand_bash'
 if not os.path.exists(bash_folder):
     os.mkdir(bash_folder)
 
-collection = []
+collection      = []
 for template in templates:
     for ii,single_image in enumerate(allImagePaths):
-        single_image = single_image.replace('\\','/')
-        frame_index = re.findall('\d+',single_image)[-1]
-        video_folder_name = single_image.split('/')[-2]
-        new_script_name = os.path.join(bash_folder,template.replace('.py',
+        single_image        = single_image.replace('\\','/')
+        frame_index         = re.findall('\d+',single_image)[-1]
+        video_folder_name   = single_image.split('/')[-2]
+        new_script_name     = os.path.join(bash_folder,template.replace('.py',
                                 f'_{video_folder_name}_frame_{frame_index}.py'))
-        new_script_name = new_script_name.replace('\\','/')
+        new_script_name     = new_script_name.replace('\\','/')
         with open(new_script_name,'w') as new_file:
             with open(template,'r') as old_file:
                 for line in old_file:
