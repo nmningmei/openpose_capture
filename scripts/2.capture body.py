@@ -21,7 +21,7 @@ frames_dir = "../results/frames"
 frame_folders = os.listdir(frames_dir)
 
 
-allImagePaths = glob(os.path.join(frames_dir,'*','*.jpeg'))
+allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
 idx = 0 # batch change
 
@@ -110,6 +110,9 @@ import PIL
 cc = np.array(PIL.Image.open(imagePath))
 fig,ax = plt.subplots(figsize = (10,10))
 ax.imshow(cc)
+for people in data:
+    people = people[people[:,-1] > 0]
+    ax.scatter(people[:,0],people[:,1],10,)
 for a in face_rectangles:
     x,y,w,h = a
     rect_ = Rectangle((x,y), w, h,
