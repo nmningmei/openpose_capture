@@ -56,7 +56,6 @@ print("Face keypoints: \n" + str(datum.faceKeypoints))
 array_dir = os.path.join(face_array_saving_dir,frame_folder)
 if not os.path.exists(array_dir):
     os.makedirs(array_dir)
-data = datum.faceKeypoints
 saving_name = f'frame_{frame_index}'
 np.save(os.path.join(array_dir,
                      f"{saving_name}.npy"),
