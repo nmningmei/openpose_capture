@@ -47,6 +47,8 @@ for (body_array,face_array,hand_array) in collections.T:
     height              = int(image_array.shape[1] / 100)
     if not os.path.exists(figure_saving_dir):
         os.mkdir(figure_saving_dir)
+    
+    plt.close("all")
     fig,ax              = plt.subplots(figsize = (width,height))
     ax.imshow(image_array)
     for ii,person in enumerate(body): # in case more than one person was detected
@@ -70,4 +72,4 @@ for (body_array,face_array,hand_array) in collections.T:
                        color='yellow',
                        )
     fig.savefig(os.path.join(figure_saving_dir,image_name))
-    
+    plt.close("all")
