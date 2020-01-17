@@ -9,97 +9,101 @@ Created on Sat Dec 21 13:37:44 2019
 import re
 import os
 import cv2
+
 import pyopenpose as op
-import numpy as np
+import numpy      as np
 
 from glob import glob
 
-params = dict()
-params["model_folder"] = "/home/mikel/Downloads/openpose/models/"
-frames_dir = "../../results/frames"
+# the rest of the parameters are left as default
+params                  = dict()
+params["model_folder"]  = "/home/mikel/Downloads/openpose/models/"
+frames_dir              = "../../results/frames"
+body_dir                = '../../results/body'
+face_rect_dir           = '../../results/face_rectangles'
+hand_rect_dir           = "../../results/hand_rectangles"
+for d in [body_dir,face_rect_dir,hand_rect_dir]:
+    if not os.path.exists(d):
+        os.mkdir(d)
 
-allImagePaths = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
+allImagePaths           = np.sort(glob(os.path.join(frames_dir,'*','*.jpeg')))
 
 idx = 433 # batch change
 
-imagePath = allImagePaths[idx]
-imagePath = imagePath.replace('\\','/')
-frame_folder = imagePath.split('/')[-2]
-frame_index = re.findall("\d+",imagePath)[-1]
+imagePath               = allImagePaths[idx]
+imagePath               = imagePath.replace('\\','/')
+frame_folder            = imagePath.split('/')[-2]
+frame_index             = re.findall("\d+",imagePath)[-1]
 
 # Starting OpenPose
-opWrapper = op.WrapperPython()
+opWrapper               = op.WrapperPython()
 opWrapper.configure(params)
 opWrapper.start()
-datum = op.Datum()
-imageToProcess = cv2.imread(imagePath)
+datum                   = op.Datum()
+imageToProcess          = cv2.imread(imagePath)
 
-datum.cvInputData = imageToProcess
+datum.cvInputData       = imageToProcess
 opWrapper.emplaceAndPop([datum])
 print(datum.poseKeypoints)
 
-array_dir = os.path.join("../../results/body",frame_folder)
+# save the body key points
+array_dir               = os.path.join(body_dir,frame_folder)
 if not os.path.exists(array_dir):
-    os.makedirs(array_dir)
-data = datum.poseKeypoints
-
-saving_name = f'frame_{frame_index}'
+    os.mkdir(array_dir)
+saving_name             = f'frame_{frame_index}'
 np.save(os.path.join(array_dir,
                      f"{saving_name}.npy"),
-        data)
+        datum.poseKeypoints)
 
-array_dir = os.path.join("../../results/face_rectangles",frame_folder)
-if not os.path.exists(array_dir):
-    os.makedirs(array_dir)
-face_rectangles = []
-for person in data:
-    leftear = person[17]
-    rightear = person[18]
-    nose = person[0]
-    if not leftear[-1]>0:
-        target_ear = rightear.copy()
+# save face rectangles
+face_array_dir          = os.path.join(face_rect_dir,frame_folder)
+hand_array_dir          = os.path.join(hand_rect_dir,frame_folder)
+for d in [face_array_dir,hand_array_dir]:
+    if not os.path.exists(d):
+        os.mkdir(d)
+face_rectangles         = []
+hand_rectangles         = []
+for person in datum.poseKeypoints: # in case multiple people detected
+    leftear             = person[17]
+    rightear            = person[18]
+    nose                = person[0]
+    lefthand            = person[7]
+    righthand           = person[4]
+    if not leftear[-1] > 0: # if not detecting left ear
+        target_ear      = rightear.copy()
     else:
-        target_ear = leftear.copy()
-    w = 2 *np.sqrt(((target_ear[0]-nose[0])**2 +\
-                    (target_ear[1]-nose[1])**2))
-    w *= 1.5
-    h = w
-    x,y = nose[0] - w/2, nose[1] - w/2
+        target_ear      = leftear.copy()
+    # the length of the sides of the square is defined 
+    # by the distance between the nose and one of the ear
+    # times a constant
+    w                   = 2 * np.sqrt(((target_ear[0]-nose[0])**2 +\
+                                       (target_ear[1]-nose[1])**2))
+    # make it even bigger
+    w                   *= 1.5
+    h                   = w
+    # the bottom left corner
+    x,y                 = nose[0] - w/2, nose[1] - w/2
     face_rectangles.append([x,y,h,w])
-face_rectangles = np.array(face_rectangles)
-np.save(os.path.join(array_dir,
+    
+    # rescale the sqaure for hand
+    w                   = w / 1.5 * 2
+    h                   = w
+    for hand,hand_name in zip([lefthand,righthand],
+                              ["lefthand","righthand"]):
+        if hand[-1] > 0:
+            x,y             = hand[0] - w/2, hand[1] - w/2
+            hand_retangle   = np.array([x,y,h,w])
+            hand_rectangles.append([x,y,h,w])
+face_rectangles         = np.array(face_rectangles)
+hand_rectangles         = np.array(hand_rectangles)
+np.save(os.path.join(face_array_dir,
                      f"{saving_name}.npy"),
         face_rectangles)
+np.save(os.path.join(hand_array_dir,
+                     f"{saving_name}.npy"),
+        hand_rectangles)
 
-array_dir = os.path.join("../../results/hand_rectangles",frame_folder)
-if not os.path.exists(array_dir):
-    os.makedirs(array_dir)
-hands = []
-for person in data:
-    lefthand = person[7]
-    righthand = person[4]
-    leftear = person[17]
-    rightear = person[18]
-    nose = person[0]
-    if not leftear[-1]>0:
-        target_ear = rightear.copy()
-    else:
-        target_ear = leftear.copy()
-    w = 2 *np.sqrt(((target_ear[0]-nose[0])**2 +\
-                    (target_ear[1]-nose[1])**2))
-    w *= 2
-    h = w
-    for hand,hand_name in zip([lefthand,righthand],
-                               ["lefthand","righthand"]):
-        if hand[-1] > 0:
-            x,y = hand[0] - w/2, hand[1] - w/2
-            hand_retangle = np.array([x,y,h,w])
-            
-            hands.append([x,y,h,w])
-hands = np.array(hands)
-np.save(os.path.join(array_dir,
-                f"{saving_name}.npy"),
-                hands)
+
 
 #from matplotlib import pyplot as plt
 #from matplotlib.patches import Rectangle
