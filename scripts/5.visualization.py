@@ -43,8 +43,8 @@ for (body_array,face_array,hand_array) in collections.T:
     imagePath           = os.path.join(output_dir,'frames',video_name,image_name)
     image_array         = np.array(PIL.Image.open(imagePath))
     figure_saving_dir   = os.path.join(figure_dir,video_name)
-    width               = int(image_array.shape[0] / 100)
-    height              = int(image_array.shape[1] / 100)
+    width               = int(image_array.shape[1] / 100)
+    height              = int(image_array.shape[0] / 100)
     if not os.path.exists(figure_saving_dir):
         os.mkdir(figure_saving_dir)
     
